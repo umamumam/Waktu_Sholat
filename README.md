@@ -1,4 +1,8 @@
 # MuslimDaily - Jadwal Sholat & Al-Quran Digital
+<img width="1920" height="4272" alt="screencapture-127-0-0-1-8000-2026-05-13-21_45_22" src="https://github.com/user-attachments/assets/6e3c9f37-40ac-4d69-b9ab-3c9f9a07e1e6" />
+
+<img width="1920" height="1556" alt="screencapture-127-0-0-1-8000-quran-2026-05-13-22_01_31" src="https://github.com/user-attachments/assets/f6458606-8d10-4311-a913-281e034e9562" />
+
 
 Platform digital modern untuk memantau jadwal sholat, membaca Al-Quran, dan mendapatkan notifikasi ibadah secara otomatis melalui Telegram.
 
