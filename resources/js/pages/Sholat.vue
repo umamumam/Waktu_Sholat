@@ -61,6 +61,11 @@ const selectCity = (c: any) => {
     fetchSchedule();
 };
 
+const isToday = (dateStr: string) => {
+    const today = new Date().toISOString().split('T')[0];
+    return dateStr === today;
+};
+
 onMounted(fetchSchedule);
 watch(searchQuery, handleSearch);
 </script>
@@ -123,7 +128,10 @@ watch(searchQuery, handleSearch);
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-50 dark:divide-slate-700/50">
-                            <tr v-for="(day, index) in monthlySchedule" :key="index" class="hover:bg-emerald-50/30 dark:hover:bg-emerald-900/10 transition-colors">
+                            <tr v-for="(day, index) in monthlySchedule" :key="index" 
+                                class="hover:bg-emerald-50/30 dark:hover:bg-emerald-900/10 transition-colors"
+                                :class="{ 'bg-emerald-50/80 dark:bg-emerald-900/30 font-bold': isToday(day.date) }"
+                            >
                                 <td class="px-6 py-4 font-bold">{{ day.tanggal }}</td>
                                 <td class="px-6 py-4 font-mono">{{ day.imsak }}</td>
                                 <td class="px-6 py-4 font-mono font-bold">{{ day.subuh }}</td>

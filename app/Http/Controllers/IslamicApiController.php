@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Services\MyQuranService;
+use App\Models\Setting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -60,21 +61,14 @@ class IslamicApiController extends Controller
             try {
                 $monthlySchedule = $this->myQuranService->getMonthlySchedule($cityId, $year, $month);
                 $allDays = $monthlySchedule['data']['jadwal'] ?? [];
-                $weeklyData = [];
-                $foundToday = false;
-                $count = 0;
+                $fullMonthData = [];
 
                 foreach ($allDays as $dateKey => $day) {
-                    if ($dateKey === $today || $foundToday) {
-                        $foundToday = true;
-                        // Add date key to the object for frontend compatibility
-                        $day['date'] = $dateKey;
-                        $weeklyData[] = $day;
-                        $count++;
-                    }
-                    if ($count >= 7) break;
+                    // Add date key to the object for frontend compatibility
+                    $day['date'] = $dateKey;
+                    $fullMonthData[] = $day;
                 }
-                $data['monthly_schedule'] = $weeklyData;
+                $data['monthly_schedule'] = $fullMonthData;
             } catch (\Exception $e) {
                 Log::warning('Failed to fetch monthly schedule: ' . $e->getMessage());
             }

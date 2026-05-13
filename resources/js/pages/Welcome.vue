@@ -82,7 +82,10 @@ const fetchInitialData = async () => {
         if (json.status) {
             const data = json.data;
             prayerTimes.value = data.prayer_times;
-            weeklySchedule.value = data.monthly_schedule || [];
+            const today = new Date().toISOString().split('T')[0];
+            weeklySchedule.value = (data.monthly_schedule || [])
+                .filter((d: any) => d.date >= today)
+                .slice(0, 7);
             hijrDate.value = {
                 day: data.calendar.hijr.day,
                 month: data.calendar.hijr.monthName,
@@ -334,6 +337,11 @@ const formattedDate = computed(() => {
         day: 'numeric',
     });
 });
+
+const isToday = (dateStr: string) => {
+    const today = new Date().toISOString().split('T')[0];
+    return dateStr === today;
+};
 
 watch(searchQuery, handleSearch);
 </script>
@@ -670,6 +678,7 @@ watch(searchQuery, handleSearch);
                                         v-for="(day, index) in weeklySchedule"
                                         :key="index"
                                         class="group transition-colors hover:bg-slate-50/50 dark:hover:bg-slate-700/30"
+                                        :class="{ 'bg-emerald-50/80 dark:bg-emerald-900/30 font-bold': isToday(day.date) }"
                                     >
                                         <td class="py-4">
                                             <div class="flex flex-col">
@@ -906,7 +915,7 @@ watch(searchQuery, handleSearch);
                                 </div>
                             </div>
                             <div
-                                v-else-if="selectedSurah && selectedSurah.ayat"
+                                v-else-if="selectedSurah && selectedSurah.ayahs"
                                 class="space-y-12"
                             >
                                 <!-- Bismillah -->
@@ -925,8 +934,8 @@ watch(searchQuery, handleSearch);
                                 </div>
 
                                 <div
-                                    v-for="ayat in selectedSurah.ayat"
-                                    :key="ayat.nomor"
+                                    v-for="ayat in selectedSurah.ayahs"
+                                    :key="ayat.ayah_number"
                                     class="group relative border-b border-slate-50 pb-12 last:border-none dark:border-slate-800/50"
                                 >
                                     <div
@@ -935,25 +944,20 @@ watch(searchQuery, handleSearch);
                                         <div
                                             class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-2 border-emerald-100 text-xs font-bold text-emerald-600 dark:border-emerald-900/30"
                                         >
-                                            {{ ayat.nomor }}
+                                            {{ ayat.ayah_number }}
                                         </div>
                                         <h2
                                             class="font-arabic dir-rtl text-right text-4xl leading-[1.8] text-slate-800 lg:text-5xl dark:text-white"
                                             style="font-family: 'Amiri', serif"
                                         >
-                                            {{ ayat.ar }}
+                                            {{ ayat.arab }}
                                         </h2>
                                     </div>
                                     <div class="space-y-4 pl-14">
                                         <p
-                                            class="mb-2 text-sm font-medium text-emerald-600 italic dark:text-emerald-400"
-                                        >
-                                            {{ ayat.tr }}
-                                        </p>
-                                        <p
                                             class="leading-relaxed text-slate-600 dark:text-slate-400"
                                         >
-                                            {{ ayat.idn }}
+                                            {{ ayat.translation }}
                                         </p>
                                     </div>
                                 </div>

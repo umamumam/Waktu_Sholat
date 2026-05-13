@@ -293,8 +293,8 @@ watch(searchQuery, handleSearch);
                             </div>
 
                             <div
-                                v-for="ayat in surahDetail.ayat"
-                                :key="ayat.nomor"
+                                v-for="ayat in surahDetail.ayahs"
+                                :key="ayat.ayah_number"
                                 class="group relative border-b border-slate-50 pb-12 last:border-none dark:border-slate-800/50"
                             >
                                 <div
@@ -303,25 +303,20 @@ watch(searchQuery, handleSearch);
                                     <div
                                         class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-2 border-emerald-100 text-xs font-bold text-emerald-600 dark:border-emerald-900/30"
                                     >
-                                        {{ ayat.nomor }}
+                                        {{ ayat.ayah_number }}
                                     </div>
                                     <h2
                                         class="font-arabic dir-rtl text-right text-4xl leading-[1.8] text-slate-800 lg:text-5xl dark:text-white"
                                         style="font-family: 'Amiri', serif"
                                     >
-                                        {{ ayat.ar }}
+                                        {{ ayat.arab }}
                                     </h2>
                                 </div>
                                 <div class="space-y-4 pl-14">
                                     <p
-                                        class="mb-2 text-sm font-medium text-emerald-600 italic dark:text-emerald-400"
-                                    >
-                                        {{ ayat.tr }}
-                                    </p>
-                                    <p
                                         class="leading-relaxed text-slate-600 dark:text-slate-400"
                                     >
-                                        {{ ayat.idn }}
+                                        {{ ayat.translation }}
                                     </p>
                                 </div>
                             </div>
