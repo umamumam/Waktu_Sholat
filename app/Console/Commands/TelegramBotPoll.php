@@ -17,9 +17,9 @@ class TelegramBotPoll extends Command
 
     public function handle(MyQuranService $apiService, TelegramService $telegramService)
     {
-        $token = Setting::get('telegram_bot_token');
+        $token = Setting::get('telegram_bot_token', config('services.telegram.bot_token'));
         if (!$token) {
-            $this->error("Telegram token not set");
+            $this->error("Telegram token not set. Please set 'telegram_bot_token' in settings table or 'TELEGRAM_BOT_TOKEN' in .env");
             return;
         }
 
@@ -40,8 +40,8 @@ class TelegramBotPoll extends Command
         while (true) {
             try {
                 // --- Notification Logic ---
-                $cityId = Setting::get('default_city_id', '1638');
-                $targetChatId = Setting::get('telegram_chat_id', '1138408697');
+                $cityId = Setting::get('default_city_id', config('services.telegram.default_city_id', '1638'));
+                $targetChatId = Setting::get('telegram_chat_id', config('services.telegram.chat_id', '1138408697'));
                 $now = now();
                 $todayKey = $now->format('Y-m-d');
                 
@@ -68,7 +68,7 @@ class TelegramBotPoll extends Command
                             // Check if it's 15 minutes before and we haven't sent a notification for this prayer today
                             $notifKey = "notif_sent_{$p}_{$todayKey}";
                             if ($diffInMinutes <= 15 && $diffInMinutes > 0 && !Cache::has($notifKey)) {
-                                $cityName = Setting::get('default_city', 'Pati');
+                                $cityName = Setting::get('default_city', config('services.telegram.default_city', 'Pati'));
                                 $msg = "🔔 <b>Pengingat Azan</b>\n\nWaktu <b>" . strtoupper($p) . "</b> untuk wilayah <b>{$cityName}</b> akan tiba dalam 15 menit ({$timeStr}).\n\nMari bersiap-siap untuk menunaikan sholat.";
                                 $telegramService->sendMessage($msg, $targetChatId, $mainMenu);
                                 Cache::put($notifKey, true, 3600);
@@ -102,8 +102,8 @@ class TelegramBotPoll extends Command
                             $msg = "Assalamu'alaikum! 🙏\nSelamat datang di Bot <b>WaktuSholatku</b>.\n\nSaya akan memberikan jadwal sholat dan pengingat 15 menit sebelum azan secara otomatis.\n\nSilakan pilih menu:";
                             $telegramService->sendMessage($msg, $chatId, $mainMenu);
                         } elseif ($text === '📅 Jadwal Sholat' || $text === '/jadwal') {
-                            $cityId = Setting::get('default_city_id', '1638');
-                            $city = Setting::get('default_city', 'Pati');
+                            $cityId = Setting::get('default_city_id', config('services.telegram.default_city_id', '1638'));
+                            $city = Setting::get('default_city', config('services.telegram.default_city', 'Pati'));
                             $data = $apiService->getTodaySchedule($cityId);
 
                             if ($data && isset($data['data']['jadwal'])) {
@@ -123,7 +123,7 @@ class TelegramBotPoll extends Command
                                 $telegramService->sendMessage("Maaf, gagal mengambil jadwal sholat untuk {$city}.", $chatId, $mainMenu);
                             }
                         } elseif ($text === '📍 Cek Lokasi') {
-                            $city = Setting::get('default_city', 'Pati');
+                            $city = Setting::get('default_city', config('services.telegram.default_city', 'Pati'));
                             $telegramService->sendMessage("📍 Lokasi aktif saat ini: <b>{$city}</b>\nSemua jadwal dan notifikasi mengacu pada lokasi ini.", $chatId, $mainMenu);
                         } elseif ($text === '📖 Al-Quran') {
                             $surahs = $apiService->getAllSurahs();

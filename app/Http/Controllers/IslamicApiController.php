@@ -21,7 +21,7 @@ class IslamicApiController extends Controller
      */
     public function getInitialData(Request $request)
     {
-        $cityId = $request->input('city_id') ?: Setting::get('default_city_id', '1638');
+        $cityId = $request->input('city_id') ?: Setting::get('default_city_id', config('services.telegram.default_city_id', '1638'));
         $now = now();
         $year = $now->year;
         $month = str_pad($now->month, 2, '0', STR_PAD_LEFT);
@@ -46,14 +46,14 @@ class IslamicApiController extends Controller
                 // Add city info
                 $data['city'] = [
                     'id' => $cityId,
-                    'lokasi' => $prayerSchedule['data']['kabko'] ?? Setting::get('default_city', 'Pati'),
+                    'lokasi' => $prayerSchedule['data']['kabko'] ?? Setting::get('default_city', config('services.telegram.default_city', 'Pati')),
                     'provinsi' => $prayerSchedule['data']['prov'] ?? ''
                 ];
             } catch (\Exception $e) {
                 Log::warning('Failed to fetch today schedule: ' . $e->getMessage());
                 $data['city'] = [
                     'id' => $cityId,
-                    'lokasi' => Setting::get('default_city', 'Pati')
+                    'lokasi' => Setting::get('default_city', config('services.telegram.default_city', 'Pati'))
                 ];
             }
 
