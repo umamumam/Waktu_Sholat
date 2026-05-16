@@ -73,6 +73,15 @@ class TelegramBotPoll extends Command
                                 $telegramService->sendMessage($msg, $targetChatId, $mainMenu);
                                 Cache::put($notifKey, true, 3600);
                             }
+
+                            // Check if it's EXACTLY prayer time
+                            $azanNotifKey = "azan_notif_sent_{$p}_{$todayKey}";
+                            if ($now->format('H:i') === $timeStr && !Cache::has($azanNotifKey)) {
+                                $cityName = Setting::get('default_city', config('services.telegram.default_city', 'Pati'));
+                                $msg = "🕌 <b>Waktu Azan Telah Tiba!</b>\n\nSekarang sudah masuk waktu sholat <b>" . strtoupper($p) . "</b> untuk wilayah <b>{$cityName}</b> dan sekitarnya ({$timeStr}).\n\nSelamat menunaikan ibadah sholat.";
+                                $telegramService->sendMessage($msg, $targetChatId, $mainMenu);
+                                Cache::put($azanNotifKey, true, 3600);
+                            }
                         }
                     }
                 }
